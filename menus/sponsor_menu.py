@@ -1,6 +1,7 @@
 """Sponsor management menu."""
 
 from utils.helpers import print_header, pause
+from utils.validators import validate_email, validate_phone
 import services.sponsor_service as sponsor_service
 
 
@@ -16,6 +17,16 @@ def ui_register_sponsor():
         pause()
         return
 
+    try:
+        email = validate_email(email)
+        phone = validate_phone(phone)
+    except ValueError as exc:
+        print(f"[!] {exc}")
+        pause()
+        return
+
+    organization = organization or None
+
     if sponsor_service.register_sponsor(fullname, organization, email, phone):
         print("Sponsor registered successfully.")
     pause()
@@ -30,7 +41,7 @@ def ui_view_sponsors():
         return
     for s in sponsors:
         print(
-            f"ID: {s.sponsor_id} | Name: {s.fullname} | Org: {s.organization} | Email: {s.email} | Phone: {s.phone}"
+            f"ID: {s.sponsor_id} | Name: {s.fullname} | Org: {s.organization or '-'} | Email: {s.email} | Phone: {s.phone}"
         )
     pause()
 
@@ -50,7 +61,7 @@ def ui_search_sponsor():
         return
     for s in results:
         print(
-            f"Found -> ID: {s.sponsor_id} | Name: {s.fullname} | Org: {s.organization} | Email: {s.email}"
+            f"Found -> ID: {s.sponsor_id} | Name: {s.fullname} | Org: {s.organization or '-'} | Email: {s.email}"
         )
     pause()
 
@@ -73,9 +84,17 @@ def ui_update_sponsor():
 
     print(f"Modifying record for {exact_match.fullname}. Leave empty to keep values.")
     fullname = input(f"New Name [{exact_match.fullname}]: ").strip() or exact_match.fullname
-    organization = input(f"New Organization [{exact_match.organization}]: ").strip() or exact_match.organization
+    organization = input(f"New Organization [{exact_match.organization or '-'}]: ").strip() or exact_match.organization
     email = input(f"New Email [{exact_match.email}]: ").strip() or exact_match.email
     phone = input(f"New Phone [{exact_match.phone}]: ").strip() or exact_match.phone
+
+    try:
+        email = validate_email(email)
+        phone = validate_phone(phone)
+    except ValueError as exc:
+        print(f"[!] {exc}")
+        pause()
+        return
 
     if sponsor_service.update_sponsor_record(
         exact_match.sponsor_id, fullname, organization, email, phone
@@ -89,13 +108,27 @@ def ui_update_sponsor():
 def ui_delete_sponsor():
     print_header("Delete Sponsor Record")
     sponsor_id = input("Enter Sponsor ID to remove: ").strip()
-    confirm = input(f"Are you sure you want to delete Sponsor ID {sponsor_id}? (yes/no): ").strip().lower()
+
+    results = sponsor_service.search_sponsors(sponsor_id)
+    match = None
+    for s in results:
+        if str(s.sponsor_id) == sponsor_id:
+            match = s
+            break
+
+    if not match:
+        print("[!] Error: Sponsor ID not found.")
+        pause()
+        return
+
+    print(f"Found: {match.fullname} | Org: {match.organization or '-'} | Email: {match.email}")
+    confirm = input(f"Delete this sponsor (ID {sponsor_id})? (yes/no): ").strip().lower()
 
     if confirm == "yes":
         if sponsor_service.delete_sponsor_record(sponsor_id):
             print("Sponsor record deleted successfully.")
         else:
-            print("[!] Failure: ID does not exist.")
+            print("[!] Failure: could not delete.")
     else:
         print("[!] Operation cancelled.")
     pause()
