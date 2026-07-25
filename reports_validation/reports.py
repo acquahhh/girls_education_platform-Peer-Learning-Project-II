@@ -1,10 +1,12 @@
 #!/usr/bin/python3
+
 import re
-import mysql.connector
-
-
-# reports.py - replace the connection function with this
 import os
+import mysql.connector
+from dotenv import load_dotenv
+load_dotenv()
+
+#reports.py - replace the connection function with this
 
 def get_database_connection():
     return mysql.connector.connect(
@@ -16,9 +18,9 @@ def get_database_connection():
         ssl_disabled=False
     )
 
-    ──────────────────────────────────────
+
 #  VALIDATION FUNCTIONS
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def validate_name(name):
     """
@@ -74,9 +76,9 @@ def validate_menu_choice(choice, valid_options):
     return True
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 #  COUNTING FUNCTIONS
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def count_students(cursor):
     """Return the total number of registered students."""
@@ -120,9 +122,9 @@ def count_mentor_assignments(cursor):
     return cursor.fetchone()[0]
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 #  REPORT FUNCTION
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 def generate_summary_report():
     """
@@ -172,12 +174,12 @@ def generate_summary_report():
         print(f"  [!] Database error: {e}")
 
 
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 #  QUICK TEST (run this file directly to test)
-# ─────────────────────────────────────────────
+# ---------------------------------------------
 
 if __name__ == "__main__":
-    print("── Validation Tests ──────────────────────────")
+    print("-- Validation Tests --------------------------")
     print(validate_name("Alice Mensah"))        # True
     print(validate_name("A"))                   # False – too short
     print(validate_name("Alice123"))            # False – has digits
@@ -191,5 +193,5 @@ if __name__ == "__main__":
     print(validate_menu_choice("1", ["1","2","3"]))   # True
     print(validate_menu_choice("9", ["1","2","3"]))   # False
 
-    print("\n── Summary Report ────────────────────────────")
+    print("\n-- Summary Report ----------------------------")
     generate_summary_report()
