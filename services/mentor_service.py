@@ -11,7 +11,7 @@ def register_mentor(fullname, profession, email, phone):
         db.execute(query, (fullname, profession, email, phone), commit=True)
         return True
     except Exception as exc:
-        print(f" Service Error: Could not register mentor. {exc}")
+        print(f"[!] Service Error: Could not register mentor. {exc}")
         return False
 
 
@@ -21,7 +21,7 @@ def get_all_mentors():
         rows = db.fetch_all(query)
         return [Mentor.from_row(row) for row in rows]
     except Exception as exc:
-        print(f" Service Error: Could not fetch mentors. {exc}")
+        print(f"[!] Service Error: Could not fetch mentors. {exc}")
         return []
 
 
@@ -32,32 +32,29 @@ def search_mentors(search_term):
         rows = db.fetch_all(query, (search_term, like_term))
         return [Mentor.from_row(row) for row in rows]
     except Exception as exc:
-        print(f" Service Error: Search failed. {exc}")
+        print(f"[!] Service Error: Could not search mentors. {exc}")
         return []
 
 
-def update_mentor_record(mentor_id, fullname, profession, email, phone):
+def update_mentor(mentor_id, fullname, profession, email, phone):
     query = """
-        UPDATE mentors
-        SET fullname = %s, profession = %s, email = %s, phone = %s
+        UPDATE mentors 
+        SET fullname = %s, profession = %s, email = %s, phone = %s 
         WHERE mentor_id = %s
     """
     try:
-        rows_affected = db.execute(
-            query, (fullname, profession, email, phone, mentor_id), commit=True
-        )
-        return rows_affected > 0
+        db.execute(query, (fullname, profession, email, phone, mentor_id), commit=True)
+        return True
     except Exception as exc:
-        print(f" Service Error: Update failed. {exc}")
+        print(f"[!] Service Error: Could not update mentor. {exc}")
         return False
 
 
-def delete_mentor_record(mentor_id):
+def delete_mentor(mentor_id):
     query = "DELETE FROM mentors WHERE mentor_id = %s"
     try:
-        rows_affected = db.execute(query, (mentor_id,), commit=True)
-        return rows_affected > 0
+        db.execute(query, (mentor_id,), commit=True)
+        return True
     except Exception as exc:
-        print(f" Service Error: Deletion failed. {exc}")
+        print(f"[!] Service Error: Could not delete mentor. {exc}")
         return False
-
