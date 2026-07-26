@@ -40,7 +40,7 @@ copy .env.example .env            # Windows
 **4. Run**
 
 ```bash
-python main.py
+python3 main.py
 ```
 
 Tables are created automatically on first run (`CREATE TABLE IF NOT EXISTS`), then you land on the main menu. Type a number to navigate; `0` to exit.
