@@ -77,3 +77,7 @@ main.py      Entry point
 ## Status
 
 Core features (students, sponsors, mentors, assignments, reports) are fully functional. Password hashing and a roles-based `Users` table exist, but the login flow is not yet wired into `main.py` — the app currently opens straight to the menu.
+
+## Conclusion
+
+The goal of this project was to create a technology solution that improves access to educational support for financially disadvantaged girls by connecting them with sponsors and mentors. The prototype achieves this by providing a structured system for managing student, sponsor, and mentor information while making it easier to track educational support records. This command-line application  demonstrates how technology can improve the organization and coordination of resources needed to support girls' education and empowerment.
